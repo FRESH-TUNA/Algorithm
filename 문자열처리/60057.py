@@ -1,15 +1,30 @@
-def compress(text, tok_len):
-    words = [text[i: i + tok_len] for i in range(0, len(text), tok_len)]
-    res = []
-    cur_word = words[0]
-    cur_cnt = 1
+# https://programmers.co.kr/learn/courses/30/lessons/60057
 
-    # index 하나차이로 해서 다 검사
-    for a, b in zip(words, words[1:] + ['']):
-        if a == b:
-            cur_cnt += 1
-        else:
-            res.append([cur_word, cur_cnt])
-            cur_word = b
-            cur_cnt = 1
-    return sum(len(word) + (len(str(cnt)) if cnt > 1 else 0) for word, cnt in res)
+def compress(s, length):
+    result = ''
+
+    # 조각을 낸 리스트
+    tokens = [ s[i:i + length] for i in range(0, len(s), length) ]
+    
+    # 리스트를 검사하여 결과 도출
+    comparator, comparator_count = tokens[0], 1
+    for token in tokens[1:]:
+        if comparator == token: comparator_count += 1
+        else: 
+            result = result + (str(comparator_count) if comparator_count > 1 else '') + comparator
+            comparator, comparator_count = token, 1
+            
+    # 처리안 된 comparator 처리
+    if comparator_count > 0:
+        result = result + (str(comparator_count) if comparator_count > 1 else '') + comparator
+    
+    return result
+        
+    
+def solution(s):
+    # 전체길이일때 압축
+    answer = len(s)
+    
+    # 길이의 절반만큼 만검사
+    for length in range(1, len(s) // 2 + 1): answer = min( answer, len(compress(s, length)) )
+    return answer

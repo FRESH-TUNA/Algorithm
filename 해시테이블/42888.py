@@ -1,15 +1,25 @@
-def solution(record):
-    answer = []
-    names = {}
-    printer = {'Enter':'님이 들어왔습니다.', 'Leave':'님이 나갔습니다.'}
+# https://programmers.co.kr/learn/courses/30/lessons/42888
 
+def solution(record):
+    user_pool = {}
+    messages = {
+        "Enter": "님이 들어왔습니다.",
+        "Leave": "님이 나갔습니다."
+    }
+    logs = []
+    
+    # user pool 채우기
     for _record in record:
         _record = _record.split()
-        if _record[0] in ['Enter', 'Change']:
-            names[_record[1]] = _record[2]
-
+        command = _record[0]
+        if command in ["Enter", "Change"]:
+            uid, uname = _record[1], _record[2]
+            user_pool[uid] = uname
+        
+    # user_pool로 로그 완성하기
     for _record in record:
-        if _record.split()[0] != 'Change':
-            answer.append(names[_record.split()[1]] + printer[_record.split()[0]])
-
-    return answer
+        _record = _record.split()
+        command, uid = _record[0], _record[1]
+        if command in ["Enter", "Leave"]:
+            logs.append(user_pool[uid] + messages[command])
+    return logs

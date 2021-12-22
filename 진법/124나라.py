@@ -1,9 +1,12 @@
 # https://programmers.co.kr/learn/courses/30/lessons/12899
 
 def solution(n):
-    numbers = ['4', '1', '2']
-    answer = ''
+    result = ''
+    values = ['4', '1', '2']
+    
+    # python은 0, 1로 while 평가 가능
     while n:
-        answer = numbers[n % 3] + answer
-        n = n // 3 - (n % 3 == 0)
-    return answer
+        n, remain = n // 3, n % 3
+        if remain == 0: n = n - 1
+        result = values[remain] + result
+    return result

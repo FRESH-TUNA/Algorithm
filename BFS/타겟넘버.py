@@ -15,23 +15,20 @@ def solution(numbers, target):
     return reduce(lambda acc, leaf: acc + 1 if leaf == target else acc, leaves, 0)
 
 
-# 내풀이인데 안된다
-def bfs(numbers, target):
+# dfs 풀이
+# dfs
+def solution(numbers, target):
     answer = 0
-    queue = [[0, numbers[0]], [0, numbers[0] * (-1)]]
+    queue = [[numbers[0],0], [-1*numbers[0],0]]
+    n = len(numbers)
     
     while queue:
-        pointer, result = queue.pop()
-        if len(numbers) - 1 == pointer:
-            answer += (1 if result == target else 0)
+        temp, idx = queue.pop()
+        idx += 1
+        if idx < n:
+            queue.append([temp+numbers[idx], idx])
+            queue.append([temp-numbers[idx], idx])
         else:
-            pointer += 1
-            queue = [
-                [pointer, result + numbers[pointer]],
-                [pointer, result - numbers[pointer]]
-            ] + queue
-    return answer
-
-def solution(numbers, target):
-    answer = bfs(numbers, target)
+            if temp == target:
+                answer += 1
     return answer

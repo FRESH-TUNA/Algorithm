@@ -1,22 +1,5 @@
 # https://programmers.co.kr/learn/courses/30/lessons/43165
-
-from functools import reduce
-
-#BFS 풀이
-def solution(numbers, target):
-    leaves = [0]
-
-    for number in numbers:
-        next_leaves = []
-        for parent in leaves:
-            next_leaves += [parent + number, parent - number]
-        leaves = next_leaves
-    
-    return reduce(lambda acc, leaf: acc + 1 if leaf == target else acc, leaves, 0)
-
-
 # dfs 풀이
-# dfs
 def solution(numbers, target):
     answer = 0
     queue = [[numbers[0],0], [-1*numbers[0],0]]
@@ -31,4 +14,25 @@ def solution(numbers, target):
         else:
             if temp == target:
                 answer += 1
+    return answer
+
+# bfs
+def solution(numbers, target):
+    answer = 0
+    queue = deque()
+    
+    # init
+    queue.extendleft([[0, numbers[0]], [0,  numbers[0] * (-1)]])
+    
+    while len(queue):
+        index, value = queue.pop()
+        
+        if index == len(numbers) - 1:
+            answer += 1 if value == target else 0
+        else:
+            index += 1
+            queue.extend([
+                [index, value + numbers[index]], 
+                [index, value - numbers[index]]])
+            
     return answer

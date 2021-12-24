@@ -1,6 +1,7 @@
 # https://programmers.co.kr/learn/courses/30/lessons/72411
 
 from itertools import combinations
+from typing import Collection
 
 def get_set_menus(orders, menu_counts):
     # dictionary 생성
@@ -8,7 +9,7 @@ def get_set_menus(orders, menu_counts):
 
     # combination의 결과를 dictionary에다가 넣는다.
     for order in orders:
-        for menu in combinations(list(order), menu_counts):
+        for menu in combinations(order, menu_counts):
             menu = ''.join(menu)
             if menu in menus: menus[menu] += 1
             else: menus[menu] = 1
@@ -29,3 +30,25 @@ def solution(orders, course):
     for menu_counts in course: 
         answer.extend(get_set_menus(orders, menu_counts))
     return sorted(answer)
+
+
+## Counter를 활용한 풀이
+import collections
+import itertools
+
+def solution(orders, course):
+    answers = []
+
+    # combination 생성
+    for _course in course:
+        menus = []
+        for order in orders:
+            menus.extend(itertools.combinations(sorted(order), _course))
+
+        # 최댓값 찾아서 반환
+        menus = collections.Counter(menus).most_common()
+        answers.extend([''.join(m) for m, count in menus if count > 1 and count == menus[0][1]])
+    
+    answers.sort()
+    return answers
+

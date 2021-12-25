@@ -5,6 +5,7 @@ ROW, COL = 5, 5
 def dfs(place, is_traced, row, col, depth):
     checkpoints = [(0, 1), (0, -1), (1, 0), (-1, 0)]
     parent_status = place[row][col]
+    # 부모 체크
     is_traced[row][col] = True
     
     for x, y in checkpoints:
@@ -13,7 +14,7 @@ def dfs(place, is_traced, row, col, depth):
         # in range check
         if not(x_c >= 0 and x_c < ROW and y_c >= 0 and y_c < COL): continue
                    
-        # traced check
+        # traced check (자식 체크)
         if is_traced[x_c][y_c]: continue         
         else: is_traced[x_c][y_c] = True
             

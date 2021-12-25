@@ -10,7 +10,7 @@ def next_direction(node_type, direction):
         "S": [0, 1, 2, 3], "L": [3, 0, 1, 2], "R": [1, 2, 3, 0]}
     return next_directions[node_type][direction]
 
-def next_pos(grid, graph, row, col, direction):
+def next_pos(grid, row, col, direction):
     m_row, m_col = len(grid) - 1, len(grid[0]) - 1
     row, col = [(row - 1, col), (row, col + 1), (row + 1, col), (row, col - 1)][direction]
     row = m_row if row < 0 else (0 if row == m_row + 1 else row)
@@ -26,7 +26,7 @@ def dfs(grid, graph, row, col, direction, count):
     direction = next_direction(grid[row][col], direction)
     
     # 다음 원소 결정 및 보정
-    row, col = next_pos(grid, graph, row, col, direction)
+    row, col = next_pos(grid, row, col, direction)
     return dfs(grid, graph, row, col, direction, count + 1)
     
 def solution(grid):

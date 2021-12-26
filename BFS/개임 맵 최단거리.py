@@ -1,5 +1,9 @@
 from collections import deque
 
+# 혹시 본인의 코드가 방문체크를 큐에서 꺼낼 때 하고있는건 아닌지 확인해보세요.
+# 방문체크를 큐에 넣을 때 해야 효율성이 통과됩니다.
+# 그 이유는 만약 꺼낼 때 방문체크를 하게되면, 하나의 블럭을 꺼내서 통로를 탐색할 때, 이미 큐에 들어있는 블럭을 또 큐에 넣을 수도 있기 때문입니다.
+
 def solution(maps):
     row_num, col_num = len(maps), len(maps[0])
     last_row, last_col = row_num - 1, col_num - 1

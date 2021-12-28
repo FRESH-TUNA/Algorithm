@@ -1,22 +1,27 @@
 from itertools import combinations
 
 def solution(relation):
-    row_num, col_num = len(relation), len(relation[0])
-    uniques, cases = [], []
-
-    for i in range(1, col_num + 1):
-        cases.extend(combinations(range(col_num), i))
-
-    for case in cases:
-        db = {tuple([item[key] for key in case]) for item in relation}
-        if len(db) != row_num: continue
+    data_num, attr_num = len(relation), len(relation[0])
+    keys, unique_keys = [], []
     
-        is_unique = True
-        for u_case in uniques:
-            if u_case.issubset(set(case)): 
-                is_unique = False
-                break
-
-        if is_unique: uniques.append(set(case))
-
-    return len(uniques)
+    # 후보키 후보
+    for amount in range(1, attr_num + 1):
+        keys.extend(map(set, combinations(range(attr_num), amount)))
+    
+    for key in keys:
+        db = set()
+        
+        for data in relation:
+            db.add("".join([data[attr] for attr in key]))
+        
+        if len(db) != data_num: continue
+        
+        if is_unique(key, unique_keys):
+            unique_keys.append(key)
+        
+    return len(unique_keys)
+    
+def is_unique(candidate, unique_keys):
+    for key in unique_keys: 
+        if key.issubset(candidate): return False
+    return True

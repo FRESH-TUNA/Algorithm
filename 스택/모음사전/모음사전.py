@@ -1,3 +1,6 @@
+# https://programmers.co.kr/learn/courses/30/lessons/84512/solution_groups?language=python3
+
+
 def solution(word):
     db, stack, answer, word = set(), ["A"], 1, list(word)
     

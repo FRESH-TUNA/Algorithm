@@ -3,30 +3,17 @@ import java.util.*;
 class Solution {
     public String[] solution(int[][] line) {
         final int LINE_NUM = line.length;
-        
-        ArrayList<long[]> intersects 
-            = new ArrayList(LINE_NUM * (LINE_NUM - 1));
+        Set<String> intersects = new HashSet<String>();
         
         for(int i = 0; i < line.length; ++i)
             for(int j = i; j < line.length; ++j)
                 pushIntersect(line, intersects, i, j);
-    
-        //adjustments testcode
-        //for(long a: adjustments) System.out.println(a);
-        long[] border = adjust_and_get_border(
-            intersects, adjust_values(intersects));
-        
-        //intersect testcode
-        // for(long[] a : intersects) {
-        //     for(int i = 0; i < a.length; ++i)
-        //         System.out.print(a[i] + " ");
-        //     System.out.println();
-        // }
-        return get_answer(intersects, border);
+
+        return get_answer(intersects, min_max(intersects));
     }
     
     private void pushIntersect(
-        int[][] line, List<long[]> intersects, int i, int j
+        int[][] line, Set<String> intersects, int i, int j
     ) {
         int[] case_i = line[i], case_j = line[j];
         
@@ -43,8 +30,7 @@ class Solution {
                     + revert[1][1] * case_j[2] * (-1))};
         if(!is_integer(intersect)) return;
         
-        intersects.add(
-            new long[] {(long) intersect[0], (long) intersect[1]});
+        intersects.add((int) intersect[1] + "," + (int) intersect[0]);
     }
     
     private boolean is_integer(double[] intersect) {
@@ -53,49 +39,36 @@ class Solution {
         return true;
     }
     
-    private long[] adjust_values(ArrayList<long[]> intersects) {
-        long x_min = 0, y_max = 0;
-        for(long[] intersect : intersects) {
-            x_min = Math.min(x_min, intersect[0]);
-            y_max = Math.max(y_max, intersect[1]);
+    private int[] min_max(Set<String> intersects) {
+        int x_min = Integer.MAX_VALUE, y_min = Integer.MAX_VALUE;
+        int x_max = Integer.MIN_VALUE, y_max = Integer.MIN_VALUE;
+        for(String intersect : intersects) {
+            String[] xy = intersect.split(",");
+            int x = Integer.parseInt(xy[0]);
+            int y = Integer.parseInt(xy[1]);
+            
+            x_max = Math.max(x_max, x);
+            x_min = Math.min(x_min, x);
+            y_max = Math.max(y_max, y);
+            y_min = Math.min(y_min, y);
         }
-        return new long[] {x_min, y_max};
-    }
-    
-    private long[] adjust_and_get_border(
-        ArrayList<long[]> intersects, long[] values
-    ) {
-        long[] border = new long[2];
-        
-        for(long[] intersect : intersects) {
-            long intersect_0 = Math.abs(intersect[1] - values[1]);
-            long intersect_1 = intersect[0] - values[0];
-            intersect[0] = intersect_0; intersect[1] = intersect_1;
-            border[0] = Math.max(border[0], intersect[0]);
-            border[1] = Math.max(border[1], intersect[1]);
-        }
-        
-        return border;
+        return new int[] {x_min, x_max, y_min, y_max};
     }
     
     private String[] get_answer(
-        ArrayList<long[]> intersects, long[] border
+        Set<String> intersects, int[] min_max
     ) {
-        int MAX_X = (int) border[0] + 1, MAX_Y = (int) border[1] + 1;
-        String[] answer = new String[MAX_X];
-        char[][] _answer = new char[MAX_X][MAX_Y];
+        int MIN_X = min_max[0], MAX_X = min_max[1];
+        int MIN_Y = min_max[2], MAX_Y = min_max[3];
+        String[] answer = new String[Math.abs(MAX_Y - MIN_Y) + 1];
         
-        for(int i = 0; i < MAX_X; ++i) {
-            _answer[i] = new char[MAX_Y];
-            Arrays.fill(_answer[i], '.');
+        for(int i = 0, _i = MAX_Y; _i >= MIN_Y; ++i, --_i) {
+            StringBuilder sb = new StringBuilder();
+            for(int _j = MIN_X; _j <= MAX_X; ++_j) 
+                sb.append(intersects.contains(_i + "," + _j) ? "*" : ".");
+            answer[i] = sb.toString();
         }
-        
-        for(long[] i : intersects)
-            _answer[(int)i[0]][(int)i[1]] = '*';
-        
-        for(int i = 0; i < MAX_X; ++i)
-            answer[i] = String.valueOf(_answer[i]);
-        
+
         return answer;
     }
 }

@@ -21,3 +21,13 @@ class Solution {
 //         return answer += (answer ^ number) >>> 2;
 //     }
 // }
+
+
+//A = 10111111
+//B = A+1 = 11000000
+
+//A xor B
+//01111111
+
+//(A xor B) >>> 2
+//00011111 만큼 채워준다.

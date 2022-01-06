@@ -4,7 +4,7 @@
 def solution(n, t, m, p):
     logs, current = ["0"], 1
     while len(logs) // m < t + 1:
-        for c in transform(current, n): logs.append(c)
+        logs.extend(transform(current, n))
         current += 1
     return "".join([l for i, l in enumerate(logs) if i%m+1 == p][:t])
 

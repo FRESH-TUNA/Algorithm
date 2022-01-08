@@ -1,4 +1,4 @@
-# 가장 큰 정사각형 찾기 (readme 예제)
+# 빛의 경로 사이클
 
 ## 링크
 https://programmers.co.kr/learn/courses/30/lessons/86052

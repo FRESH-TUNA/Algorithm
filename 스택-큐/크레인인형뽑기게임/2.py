@@ -1,5 +1,5 @@
 def solution(b, moves):
-    crain = [[]] + [[x for x in reversed(s) if x] for s in zip(*b)]
+    crain = [[]] + [[x for x in s if x] for s in zip(*b[::-1])]
     ans, stack = 0, []
     for move in moves:
         if not len(crain[move]): continue

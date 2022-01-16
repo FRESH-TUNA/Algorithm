@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/Algorithm.iml" filepath="$PROJECT_DIR$/Algorithm.iml" />
+      <module fileurl="file://$PROJECT_DIR$/DFS/DFS.iml" filepath="$PROJECT_DIR$/DFS/DFS.iml" />
+      <module fileurl="file://$PROJECT_DIR$/DP/DP.iml" filepath="$PROJECT_DIR$/DP/DP.iml" />
+      <module fileurl="file://$PROJECT_DIR$/그리디/그리디.iml" filepath="$PROJECT_DIR$/그리디/그리디.iml" />
+      <module fileurl="file://$PROJECT_DIR$/문자열처리/문자열처리.iml" filepath="$PROJECT_DIR$/문자열처리/문자열처리.iml" />
+      <module fileurl="file://$PROJECT_DIR$/비트연산/비트연산.iml" filepath="$PROJECT_DIR$/비트연산/비트연산.iml" />
+    </modules>
+  </component>
+</project>

@@ -22,14 +22,15 @@ def canopen(lock, keys, len_key, len_rock):
         for j in range(length):
             for key in keys:
                 set_key(lock, key, i, j)
-                if check(lock, len_key): return True
+                if check(lock, len_key, len_rock): 
+                    return True
                 set_key(lock, key, i, j)
     return False
 
-def check(lock, len_key):
-    for i in range(len_key):
-        for j in range(len_key):
-            if not lock[len_key+i][len_key+j] == 1: return False
+def check(lock, len_key, len_rock):
+    for i in range(len_rock):
+        for j in range(len_rock):
+            if not lock[len_key+i][len_key+j]: return False
     return True
 
 def set_key(lock, key, k, l):

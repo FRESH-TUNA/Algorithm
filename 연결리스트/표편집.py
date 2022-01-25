@@ -4,10 +4,10 @@ def solution(n, k, cmd):
 
     for c in cmd:
         if c[0] == 'D':
-            _k = int(c[2])
+            _k = int(c[2:])
             while _k: _k, k = _k-1, db[k][1]
         elif c[0] == 'U':
-            _k = int(c[2])
+            _k = int(c[2:])
             while _k: _k, k = _k-1, db[k][0]
         elif c[0] == 'C':
             (prev, _next), ans[k] = db[k], "X"
@@ -21,4 +21,3 @@ def solution(n, k, cmd):
             if _n != n: db[_n][0] = _k
 
     return "".join(ans)
-

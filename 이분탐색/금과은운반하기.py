@@ -17,6 +17,7 @@ def solution(a, b, g, s, w, t):
                              ) else (moves * _weight)
             silver += _silver if (_silver < moves * _weight
                                  ) else (moves * _weight)
+            # 전체용량, 금, 은 이 모두 기준값보다 커야 답이 될수 있다.
             total += _gold + _silver if(
                 _gold + _silver < moves * _weight
             ) else moves * _weight

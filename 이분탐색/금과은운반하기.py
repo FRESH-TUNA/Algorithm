@@ -1,3 +1,4 @@
+# https://bladejun.tistory.com/166
 def solution(a, b, g, s, w, t):
     start, end = 0, (10**9) * 2 * (10**5) * 2    
     cities = zip(g, s, w, t)

@@ -32,4 +32,3 @@ class Codec:
     def deserialize(self, data):
         if not data: return None
         else: return self._deserialize(data.split(","), 0)
-        

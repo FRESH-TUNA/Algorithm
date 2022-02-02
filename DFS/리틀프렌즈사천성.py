@@ -93,15 +93,16 @@ class Solution {
         int alias = s_j <= e_j ? 1 : -1;
         
         if(s_j != e_j) {
-            s_j += alias;
             while (s_j != e_j) {
-                if(graph[s_i][s_j] != '.' ) return false;
+                char c = graph[s_i][s_j];
+                if(c != '.' && c != graph[e_i][e_j]) return false;
                 s_j += alias;
             }
         }
         if(s_i != e_i) {
             while (s_i != e_i) {
-                if(graph[s_i][s_j] != '.') return false;
+                char c = graph[s_i][s_j];
+                if(c != '.' && c != graph[e_i][e_j]) return false;
                 s_i += 1;
             }
         }
@@ -112,15 +113,16 @@ class Solution {
         int alias = s_j <= e_j ? 1 : -1;
 
         if(s_i != e_i) {
-            s_i += 1;
             while (s_i != e_i) {
-                if(graph[s_i][s_j] != '.') return false;
+                char c = graph[s_i][s_j];
+                if(c != '.' && c != graph[e_i][e_j]) return false;
                 s_i += 1;
             }
         }
         if(s_j != e_j) {
             while (s_j != e_j) {
-                if(graph[s_i][s_j] != '.') return false;
+                char c = graph[s_i][s_j];
+                if(c != '.' && c != graph[e_i][e_j]) return false;
                 s_j += alias;
             }
         }

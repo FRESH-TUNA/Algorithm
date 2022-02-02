@@ -1,5 +1,7 @@
 import java.util.HashMap;
 import java.util.Map;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -8,6 +10,7 @@ import java.util.Iterator;
 class Solution {
     private final int MAX_WIDTH = 100;
     private Map<Character, List<int[]>> db = new HashMap<>();
+    private List<Character> keys;
     private char[][] graph = new char[MAX_WIDTH][MAX_WIDTH];
     private StringBuilder ans = new StringBuilder();
     
@@ -17,29 +20,36 @@ class Solution {
     }
     
     private boolean pung() {
-        while(!db.isEmpty()) {
-            Iterator<Character> it = db.keySet().iterator();
+        while(!keys.isEmpty()) {
+            Iterator<Character> it = keys.iterator();
             List<Character> _ans = new ArrayList();
-            
+
             while(it.hasNext()) {
                 char key = it.next();
-                if(check(key)) _ans.add(key); 
+                if(check(key)) {
+                    _ans.add(key);
+                    traced_apply(key);
+                }
             }
+            
             
             if(_ans.isEmpty()) return false;
             
             Collections.sort(_ans);
+            
             it = _ans.iterator();
             while(it.hasNext()) {
-                char key = it.next();
+                Character key = it.next();
                 ans.append(key);
-                traced_apply(key); 
+                keys.remove(key);
             }
         }
         return true;
     }
     
     private void init(int m, int n, String[] board) {
+        Set<Character> nodes = new HashSet();
+        
         for(int i = 0; i < m; ++i) {
             for(int j = 0; j < n; ++j) {
                 char key = board[i].charAt(j);
@@ -50,8 +60,12 @@ class Solution {
                 if(!db.containsKey(key))
                     db.put(key, new ArrayList(2));
                 db.get(key).add(new int[] {i, j});
+                nodes.add(key);
             }
         }
+        
+        keys = new ArrayList(nodes);
+        Collections.sort(keys);
     }
     
     private boolean check(char key) {
@@ -62,9 +76,6 @@ class Solution {
         
         boolean up = up_test(s_i, s_j, e_i, e_j);
         boolean down = down_test(s_i, s_j, e_i, e_j);
-        System.out.println(key);
-        System.out.println(up);
-        System.out.println(down);
         return up || down;
     }
     
@@ -82,14 +93,13 @@ class Solution {
         int alias = s_j <= e_j ? 1 : -1;
         
         if(s_j != e_j) {
-            s_j += 1;
+            s_j += alias;
             while (s_j != e_j) {
                 if(graph[s_i][s_j] != '.' ) return false;
                 s_j += alias;
             }
         }
         if(s_i != e_i) {
-            s_i += 1;
             while (s_i != e_i) {
                 if(graph[s_i][s_j] != '.') return false;
                 s_i += 1;
@@ -100,7 +110,7 @@ class Solution {
     
     private boolean down_test(int s_i, int s_j, int e_i, int e_j) {   
         int alias = s_j <= e_j ? 1 : -1;
-        
+
         if(s_i != e_i) {
             s_i += 1;
             while (s_i != e_i) {
@@ -109,7 +119,6 @@ class Solution {
             }
         }
         if(s_j != e_j) {
-            s_j += alias;
             while (s_j != e_j) {
                 if(graph[s_i][s_j] != '.') return false;
                 s_j += alias;

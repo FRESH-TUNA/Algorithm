@@ -35,7 +35,7 @@ class Trie:
             
             # 더이상 탐색이 불가능하면 탐색 종료
             if not word[0] in node.children: return result
-            
+
             # 다음 자식 노드로 갱신
             node = node.children[word[0]]
             word = word[1:]

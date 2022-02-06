@@ -2,10 +2,11 @@ from collections import deque
 
 def solution(board):
     N, Q = len(board), deque([(0,0,-1,0)])
-    MAX_DIST = 400 * 25 * 25
-    dists = [[MAX_DIST for _ in range(N)] for _ in range(N)]
+    MAX_DIST = 100000000
     OUTBOUNDS, UNREACHABLE = (N, -1), 1
-    answer, dists[0][0] = MAX_DIST, 0 
+    
+    dists = [[MAX_DIST for _ in range(N)] for _ in range(N)]
+    answer = MAX_DIST
     
     while Q:
         y, x, d, c = Q.pop()
@@ -20,7 +21,7 @@ def solution(board):
 
             cost = c + (100 if d == direction else 600)
     
-            if dists[ny][nx] < cost: continue
+            if dists[ny][nx] < cost - 400: continue
                 
             Q.appendleft((ny, nx, direction, cost))
             dists[ny][nx] = cost

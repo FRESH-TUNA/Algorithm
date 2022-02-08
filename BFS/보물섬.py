@@ -1,4 +1,5 @@
 # https://www.acmicpc.net/problem/2589
+
 import sys
 from collections import deque
 
@@ -21,7 +22,7 @@ def answer(ROW, COL, graph):
 def bfs(start_row, start_col, ROW, COL, graph):
     traced = [[data for data in row] for row in graph]
     Q = deque(((start_row, start_col, 0),))
-    ans = 0
+    ans, traced[start_row][start_col] = 0, 'W'
     while Q:
         i, j, d = Q.pop()
         cases = [(i+1, j), (i-1, j), (i, j+1), (i, j-1)]
@@ -33,7 +34,6 @@ def bfs(start_row, start_col, ROW, COL, graph):
             ans = max(ans, d+1)
             Q.appendleft((ni, nj, d+1))
     return ans
-
 
 # driver
 print(answer(*init()))

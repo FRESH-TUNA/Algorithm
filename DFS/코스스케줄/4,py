@@ -1,0 +1,27 @@
+from collections import defaultdict, Counter
+
+def solution(tickets):
+    N = len(tickets) + 1
+    graph, answer, stack = defaultdict(list), [], []
+    traced = Counter()
+    
+    for (s, e) in sorted(tickets):
+        graph[s].append(e)
+        traced[":".join((s, e))] += 1
+        
+    dfs(graph, "ICN", stack, traced, answer, N)
+    
+    return answer[0]
+
+def dfs(graph, start, stack, traced, answer, N):
+    stack.append(start)
+    if len(stack) == N: 
+        answer.append([x for x in stack])
+    else:
+        for end in graph[start]:
+            key = ":".join((start, end))
+            if not traced[key]: continue
+            traced[key] -= 1
+            dfs(graph, end, stack, traced, answer, N)
+            traced[key] += 1
+    stack.pop()

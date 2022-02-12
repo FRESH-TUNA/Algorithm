@@ -23,9 +23,9 @@ class Solution {
                 answer[i][j][1] += answer[i][j-1][1];
                 
                 if(cityMap[i-1][j] != 2)
-                    answer[i][j][1] += answer[i-1][j][1];
+                    answer[i][j][0] += answer[i-1][j][1];
                 if(cityMap[i][j-1] != 2)
-                    answer[i][j][0] += answer[i][j-1][0];
+                    answer[i][j][1] += answer[i][j-1][0];
                 
                 answer[i][j][0] = answer[i][j][0] % MOD;
                 answer[i][j][1] = answer[i][j][1] % MOD;

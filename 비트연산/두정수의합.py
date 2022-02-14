@@ -3,6 +3,7 @@ class Solution:
         MASK = 0xFFFFFFFF
         INT_MAX = 0x7FFFFFFF
         
+        # MASK를 and해주면 음수는 2의 보수형태가 된다.
         a_bin = bin(a & MASK)[2:].zfill(32)
         b_bin = bin(b & MASK)[2:].zfill(32)
         

@@ -31,10 +31,6 @@ def deset_bow(graph, x, y):
     # 밑에 기둥이 있으면
     if x+1 < len(graph) and y-1 >= 0 and graph[x+1][y-1][0]:
         graph[x][y][1] = 0
-        
-    # 위에 기둥이 없으면
-    if x+1 < len(graph) and not graph[x+1][y][0]:
-        graph[x][y][1] = 0
     
     return graph[x][y][1] == 0
 
@@ -53,11 +49,9 @@ def set_gidung(graph, x, y):
     return graph[x][y][0] == 1
     
 def deset_gidung(graph, x, y):
-    print("deset_gidung", x, y)
     #bow와 bow 사이
-    if x-1 >= 0 and graph[x-1][y][1] and graph[x+1][y][1]:
-        graph[x][y][1] = 1
-    
-    #밑에 기둥이 있는가
-    if y-1 >= 0 and graph[x][y-1][0]: graph[x][y][1] = 1
-    return graph[x][y][1] == 1
+    if (x-1 >= 0 and y+1 < len(graph) and 
+        graph[x-1][y+1][1] and graph[x][y+1][1]):
+        graph[x][y][0] = 0
+    print("deset_gidung", x, y)
+    return graph[x][y][0] == 0

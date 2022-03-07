@@ -64,3 +64,4 @@ for i in range(n):
             bx, by = i, j
 
 print(bfs(rx, ry, bx, by, graph))
+

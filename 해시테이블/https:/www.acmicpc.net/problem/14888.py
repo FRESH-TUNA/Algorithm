@@ -13,15 +13,15 @@ def solution(NUMS, OP_CASES):
 
 def calculate(NUMS, ops):
     Q = deque(NUMS)
+    opcs = ('+', '-', '*', '//')
     res = Q.popleft()
 
     for op in ops:
         right = Q.popleft()
-        if op == 0: res += right
-        elif op == 1: res -= right
-        elif op == 2: res *= right
-        elif res > 0: res = res // right
-        else: res = (-1) * ((res * -1) // right)
+        if op == 3:
+            res = (res // right if res > 0 
+                   else (-1) * ((res * -1) // right))
+        else: res = eval(str(res) + opcs[op] + str(right))
     return res
 
 def in_border(N, M, x, y):

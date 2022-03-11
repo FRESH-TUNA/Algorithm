@@ -1,29 +1,31 @@
 def solution(play_time, adv_time, logs):
     play_time, adv_time = hms_to_s(play_time), hms_to_s(adv_time)
-    logs = [[hms_to_s(l) for l in log.split("-")] for log in logs]
-    times = [0] * (play_time+1)
-    
-    # 시작, 끝시간대에서 동시 접속자
-    for (start, end) in logs:
-        times[start] += 1
-        times[end] -= 1
-        
-    # 모든 시간대에서의 동시 접속자 계산
-    for i in range(1, len(times)): times[i] += times[i-1]
+    logs = [[hms_to_s(t) for t in l.split("-")] for l in logs]
 
-    # 모든 시간대에서의 누적 접속자 계산
-    for i in range(1, len(times)): times[i] += times[i-1]
+    # 0초부터 play_time초
+    db = [0] * (play_time+1)
     
-    most_view, start_time = 0, 0
+    for (start, end) in logs: 
+        db[start] += 1
+        db[end] -= 1
     
-    if most_view < times[adv_time-1]: most_view = times[adv_time-1]
+    # 각 시간대의 동시접속자
+    for t in range(1, play_time+1): db[t] += db[t-1]
     
-    for i in range(adv_time, play_time):
-        if most_view < times[i] - times[i - adv_time]:
-            most_view = times[i] - times[i - adv_time]
-            start_time = i - adv_time + 1
-    return s_to_hms(start_time)
-
+    # 각 시간대의 누적접속자
+    for t in range(1, play_time+1): db[t] += db[t-1]
+    
+    # 값 계산
+    res, acc = 0, 0
+    if db[adv_time]: acc = db[adv_time]
+    
+    for t in range(play_time - adv_time + 1):
+        if acc < db[t+adv_time] - db[t]: 
+            acc = db[t+adv_time] - db[t]
+            res = t+1
+    
+    return s_to_hms(res)
+    
 def hms_to_s(time):
     h, m, s = [int(t) for t in time.split(":")]
     return h*3600 + m*60 + s
@@ -36,4 +38,3 @@ def s_to_hms(time):
     m = '0' + str(m) if m < 10 else str(m)
     s = '0' + str(s) if s < 10 else str(s)
     return h + ':' + m + ':' + s
-    

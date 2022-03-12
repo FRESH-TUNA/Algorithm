@@ -1,5 +1,6 @@
 import sys
-
+# https://ca.ramel.be/178, ㅊㅏㅁ고자료
+# https://suri78.tistory.com/212
 # global
 res = sys.maxsize
 

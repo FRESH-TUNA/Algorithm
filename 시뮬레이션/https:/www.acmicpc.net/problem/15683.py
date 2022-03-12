@@ -10,7 +10,7 @@ TRACE_INFOS = (
     ((), (WE,), (WE, EA), (WE, NO), (SO, WE, NO), (NO, EA, SO, WE)),
 )
 MDS = ((-1, 0), (0, 1), (1, 0), (0, -1))
-VISITED = 7
+WALL, VISITED = 6, 7
 
 def solution(N, M, GRAPH):
     CCTVS = get_cctv_infos(N, M, GRAPH)
@@ -34,11 +34,9 @@ def trace(N, M, traced, i, j, TRACE_INFO):
         ni, nj = i, j
         while True:
             ni, nj = MDS[t][0]+ni, MDS[t][1]+nj
-            if ni in (N, -1) or nj in (M, -1):
+            if ni in (N, -1) or nj in (M, -1) or traced[ni][nj] == WALL:
                 break
-            if not(not traced[ni][nj] or traced[ni][nj] == VISITED): 
-                break
-            if traced[ni][nj] != VISITED: 
+            if not traced[ni][nj]: 
                 traced[ni][nj], res = VISITED, res+1
     return res
 
@@ -46,7 +44,7 @@ def get_cctv_infos(N, M, GRAPH):
     res = []
     for i in range(N):
         for j in range(M):
-            if GRAPH[i][j] not in (0, 6):
+            if GRAPH[i][j] not in (0, WALL):
                 res.append((i, j, GRAPH[i][j]))
     return res
 

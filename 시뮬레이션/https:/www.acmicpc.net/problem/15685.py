@@ -13,12 +13,11 @@ def solution(cows):
 def add_cow(graph, j, i, d, g):
     Q = deque(((i+DI[d], j+DJ[d]), (i, j)))
     for x in range(g):
-        ai, aj = Q[0][0] * (-1), Q[0][1] * (-1)
-        NQ = deque()
-        for i in range(1, 2**x + 1):
+        ai, aj, i = Q[0][0] * (-1), Q[0][1] * (-1), 1
+        for _ in range(2**x):
             ti, tj = Q[i][1]+aj-ai, (Q[i][0]+ai) * (-1)-aj
-            NQ.append((ti, tj))
-        Q.extendleft(NQ)
+            Q.appendleft((ti, tj))
+            i += 2
     for (i, j) in Q: graph[i][j] = 1
 
 def squares(g):

@@ -1,8 +1,6 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.Map;
-import static java.util.Map.entry;
 
 public class Main {
     // NORTH, EAST, SOUTH, WEST = 0, 1, 2, 3
@@ -14,13 +12,6 @@ public class Main {
     private static char[][] GRAPH;
     private static int ROW, COL;
     private static int res = MAX_RES + 1;
-
-    //for test
-    private static final Map<Integer, String> IDX_TO_D = Map.ofEntries(
-            entry(0, "NORTH"), entry(1, "EAST"),
-            entry(2, "SOUTH"), entry(3, "WEST")
-    );
-
 
     public static void main(String[] args) throws IOException {
         input();
@@ -50,7 +41,7 @@ public class Main {
     }
 
     private static void dfs(int d, int count, int[] ijs, char[][] graph) {
-        if(count == MAX_RES | count >= res) return;
+        if(count > MAX_RES | count >= res) return;
         int[] rij = {ijs[0], ijs[1]}, bij = {ijs[2], ijs[3]};
         int idx = D_FRONT[d][0], mpy = D_FRONT[d][1];
         int r_priority = rij[idx] * mpy, b_priority = bij[idx] * mpy;
@@ -97,8 +88,6 @@ public class Main {
         }
     }
 
-
-
     private static boolean move(int[] ij, int d, char[][] graph) {
         int oi = ij[0], oj = ij[1];
         while(true) {
@@ -141,16 +130,16 @@ public class Main {
     /*
      * tests
      */
-//    private static void find_red_blue_ball_test() {
-//        int[] a = find_red_blue_balls();
-//        for(int i = 0; i < a.length; ++i) System.out.print(a[i] + " ");
-//    }
-//
-//    private static void print_graph(char[][] graph) {
-//        for(int i = 0; i < ROW; ++i) {
-//            for (int j = 0; j < COL; ++j)
-//                System.out.print(graph[i][j]);
-//            System.out.println();
-//        }
-//    }
+    private static void find_red_blue_ball_test() {
+        int[] a = find_red_blue_balls();
+        for(int i = 0; i < a.length; ++i) System.out.print(a[i] + " ");
+    }
+
+    private static void print_graph(char[][] graph) {
+        for(int i = 0; i < ROW; ++i) {
+            for (int j = 0; j < COL; ++j)
+                System.out.print(graph[i][j]);
+            System.out.println();
+        }
+    }
 }

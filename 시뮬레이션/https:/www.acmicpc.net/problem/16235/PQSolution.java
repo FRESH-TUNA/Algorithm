@@ -3,7 +3,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.*;
 
-public class Main {
+public class PQSolution {
     private static final int INIT_NUTIRENT = 5, DN = 8;
     private static final int[] DI = {-1, -1, 0, 1, 1, 1, 0, -1};
     private static final int[] DJ = {0, 1, 1, 1, 0, -1, -1, -1};

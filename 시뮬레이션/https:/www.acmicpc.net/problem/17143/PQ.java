@@ -3,9 +3,10 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.*;
 
-public class Main {
+public class PQ {
     private static int N, M, SHARKS_N;
-    private static int[][][] GRAPH, MOVED;
+    private static int[][][] GRAPH;
+    private static PriorityQueue<int[]>[][] MOVED;
     private static Set<int[]> SHARKS;
 
     private static final int R = 0, C = 1, S = 2, D = 3, Z = 4;
@@ -15,6 +16,7 @@ public class Main {
 
     public static void main(String[] args) throws IOException {
         input();
+        moved_init();
         fishing();
     }
 
@@ -22,8 +24,8 @@ public class Main {
         int res = 0;
         for (int pos = 1; pos < M+1; ++pos) {
             res += catch_shark(pos);
-            move_eat_sharks();
-            apply_to_graph();
+            move_sharks();
+            eat_sharks();
         }
         System.out.println(res);
     }
@@ -40,22 +42,22 @@ public class Main {
         return 0;
     }
 
-    private static void move_eat_sharks() {
-        Set<int[]> eaten = new HashSet<>();
+    private static void move_sharks() {
+        for (int[] shark : SHARKS) { move_shark(shark); }
+    }
 
-        for (int[] shark : SHARKS) {
-            move_shark(shark);
-            int r = shark[R], c = shark[C];
-            int[] premoved = MOVED[r][c];
-
-            if(premoved == null) MOVED[r][c] = shark;
-            else if(shark[Z] > premoved[Z]) {
-                MOVED[r][c] = shark;
-                eaten.add(premoved);
-            } else { eaten.add(shark); }
+    private static void eat_sharks() {
+        for (int i = 1; i < N+1; ++i) {
+            for (int j = 1; j < M+1; ++j) {
+                PriorityQueue<int[]> q = MOVED[i][j];
+                if(q.isEmpty()) GRAPH[i][j] = null;
+                else {
+                    GRAPH[i][j] = q.poll();
+                    SHARKS.removeAll(q);
+                    q.clear();
+                }
+            }
         }
-
-        SHARKS.removeAll(eaten);
     }
 
     private static void move_shark(int[] f) {
@@ -70,15 +72,7 @@ public class Main {
             else break;
         }
         f[R]=r; f[C]=c; f[D]=d;
-    }
-
-    private static void apply_to_graph() {
-        for(int i = 1; i < N+1; ++i) {
-            for(int j = 1; j < M+1; ++j) {
-                GRAPH[i][j] = MOVED[i][j];
-                MOVED[i][j] = null;
-            }
-        }
+        MOVED[r][c].offer(f);
     }
 
     private static void input() throws IOException {
@@ -90,7 +84,6 @@ public class Main {
         SHARKS_N = Integer.parseInt(st.nextToken());
 
         GRAPH = new int[N+1][M+1][];
-        MOVED = new int[N+1][M+1][];
         SHARKS = new HashSet();
         for (int i = 0; i < SHARKS_N; ++i) {
             st = new StringTokenizer(br.readLine());
@@ -101,5 +94,40 @@ public class Main {
             SHARKS.add(fish);
         }
         br.close();
+    }
+
+    private static void moved_init() {
+        MOVED = new PriorityQueue[N+1][M+1];
+        for (int i = 1; i < N+1; ++i)
+            for (int j = 1; j < M+1; ++j)
+                MOVED[i][j] = new PriorityQueue<>((a, b) -> compareQ(a, b));
+    }
+    private static int compareQ(int[] a, int[] b) { return b[Z] - a[Z]; }
+
+
+    /*
+     * tests
+     */
+    private static void graph_init_test() {
+        for (int i = 1; i < N+1; ++i) {
+            for (int j = 1; j < M+1; ++j) {
+                if(GRAPH[i][j] == null)
+                    System.out.print(0 + " ");
+                else
+                    System.out.print(GRAPH[i][j][Z] + " ");
+            }
+            System.out.println();
+        }
+        System.out.println("------------");
+    }
+
+    private static void sharks_init_test() {
+        for (int[] fish : SHARKS) {
+            System.out.print(fish[R] + " ");
+            System.out.print(fish[C] + " ");
+            System.out.print(fish[S] + " ");
+            System.out.print(fish[D] + " ");
+            System.out.print(fish[Z] + "\n");
+        }
     }
 }

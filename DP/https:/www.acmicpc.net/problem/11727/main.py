@@ -11,6 +11,6 @@ def calc():
 
 # driver
 N = int(input())
-DB = [0] * (N+1)
+DB = [0] * (1000+1)
 calc()
 print(DB[N])

@@ -45,26 +45,12 @@ public class Main {
         int[] rij = {ijs[0], ijs[1]}, bij = {ijs[2], ijs[3]};
         int idx = D_FRONT[d][0], mpy = D_FRONT[d][1];
         int r_priority = rij[idx] * mpy, b_priority = bij[idx] * mpy;
-
-        if(r_priority >= b_priority) {
-            boolean rij_res = move(rij, d, graph);
-            boolean bij_res = move(bij, d, graph);
-
-            if(!rij_res && bij_res) {
-                res = Math.min(count, res);
-                return;
-            }
-            if(!bij_res) return;
-        }
-        else {
-            boolean bij_res = move(bij, d, graph);
-            boolean rij_res = move(rij, d, graph);
-
-            if(!bij_res) return;
-            if(!rij_res) {
-                res = Math.min(count, res);
-                return;
-            }
+        boolean rij_res = move(rij, d, graph), bij_res = move(bij, d, graph);
+        
+        if(!bij_res) return;
+        else if(!rij_res) {
+            res = Math.min(count, res);
+            return;
         }
 
         // adjusting
@@ -125,21 +111,5 @@ public class Main {
             for(int j = 0; j < COL; ++j)
                 copied_graph[i][j] = graph[i][j];
         return copied_graph;
-    }
-
-    /*
-     * tests
-     */
-    private static void find_red_blue_ball_test() {
-        int[] a = find_red_blue_balls();
-        for(int i = 0; i < a.length; ++i) System.out.print(a[i] + " ");
-    }
-
-    private static void print_graph(char[][] graph) {
-        for(int i = 0; i < ROW; ++i) {
-            for (int j = 0; j < COL; ++j)
-                System.out.print(graph[i][j]);
-            System.out.println();
-        }
     }
 }

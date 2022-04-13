@@ -12,71 +12,71 @@ class Node:
 
 def init():
     # driver
-    global N, K, JEWELS, BACKS, REMOVED
+    global N, K, JEWELS, BACKS, REMOVED, BACKS_TREE
     input = sys.stdin.readline
     N, K = map(int, input().split())
     JEWELS = [list(map(int, input().split())) for _ in range(N)]
     BACKS = [int(input()) for _ in range(K)]
     JEWELS.sort(key=cmp_to_key(comparator), reverse=True)
-
-def make_tree():
-    global BACKS_TREE
     BACKS_TREE = None
-    for back in BACKS: 
-        BACKS_TREE = insert(back, BACKS_TREE)
 
-def insert(back, root):
-    if root is None: return Node(back)
-    if back < root.key:
-        root.left = insert(back, root.left)
-    else:
-        root.right = insert(back, root.right)
-    return root
+def make_tree(): 
+    for back in BACKS: insert(back)
 
-def delete(node, key):
-    if node is None: return node
-    elif key < node.key:
-        node.left = delete(node.left, key)
-        return node
-    elif key > node.key:
-        node.right = delete(node.right, key)
-        return node
-
-    if node.left is None and node.right is None:
-        return None
-    if node.left is None: return node.right
-    if node.right is None: return node.left
+def insert(back):
+    global BACKS_TREE
     
-    
-    if node.left is None:
-        return node.right
-    if node.right is None:
-        return node.left
+    if BACKS_TREE is None: 
+        BACKS_TREE = Node(back)
+        return
 
+    root = BACKS_TREE
+    while True:
+        if back < root.key:
+            if root.left == None:
+                root.left = Node(back)
+                return
+            else: root = root.left
+        else:
+            if root.right == None:
+                root.right = Node(back)
+                return
+            else: root = root.right
 
-    succ_parent, succ = node, node.right
-    while succ.left != None:
-        succ_parent, succ = succ, succ.left
-    if succ_parent != node:
-        succ_parent.left = succ.right
+def delete(prev, curr):
+    global BACKS_TREE
+    if curr.left == None or curr.right == None:
+        newCurr = None
+
+        if curr.left == None: newCurr = curr.right
+        else: newCurr = curr.left
+
+        if prev == None: BACKS_TREE = newCurr
+        elif curr == prev.left: prev.left = newCurr
+        else: prev.right = newCurr
     else:
-        succ_parent.right = succ.right
-    node.key = succ.key
-    return node
+        p, temp = None, curr.right
+        while(temp.left != None):
+            p, temp = temp, temp.left
+        if p != None: p.left = temp.right 
+        else: curr.right = temp.right
+        curr.key = temp.key
 
 def solution():
     global BACKS_TREE
     res = 0
     
     for w, v in JEWELS:
-        node, target = BACKS_TREE, None  
+        node, node_p = BACKS_TREE, None
+        target, target_p = None, None
         while node:
             if node.key >= w:
-                target, node = node, node.left
-            else: node = node.right
+                target_p, target = node_p, node
+                node_p, node = node, node.left
+            else: node_p, node = node, node.right
         if target:
             res += v
-            BACKS_TREE = delete(BACKS_TREE, target.key)
+            delete(target_p, target)
     print(res)
 
 def comparator(a, b):

@@ -1,12 +1,16 @@
-SET @max_c := (SELECT MAX(e.c) max_c FROM (SELECT hacker_id, COUNT(*) c FROM challenges GROUP BY hacker_id) e);
+/*
+Enter your query here.
+*/
+SET @max := (
+    SELECT max(t.c)
+    FROM (SELECT hacker_id, count(*) c FROM CHALLENGES GROUP BY hacker_id) t
+);
 
-SELECT d.hacker_id, d.name, b.c FROM
-(
-  SELECT hacker_id, COUNT(*) c FROM challenges GROUP BY hacker_id
-) b
-JOIN(
-  SELECT f.c, COUNT(*) co FROM (SELECT hacker_id, COUNT(*) c FROM challenges GROUP BY hacker_id) f GROUP BY f.c
-) c ON c.c = b.c
-JOIN hackers d ON d.hacker_id = b.hacker_id
-WHERE c.co < 2 OR  c.c = @max_c
-ORDER BY b.c DESC, d.hacker_id
+SELECT HACKERS.hacker_id, HACKERS.name, t2.c
+FROM (SELECT hacker_id, count(*) c FROM CHALLENGES GROUP BY hacker_id) t2 
+JOIN HACKERS ON HACKERS.hacker_id = t2.hacker_id
+JOIN (SELECT c, count(*) cc
+      FROM (SELECT hacker_id, count(*) c FROM CHALLENGES GROUP BY hacker_id) t3
+      GROUP BY c) t4 ON t4.c = t2.c
+WHERE t2.c = @max or t4.cc = 1
+ORDER BY t2.c DESC, HACKERS.hacker_id ASC

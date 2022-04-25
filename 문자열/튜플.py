@@ -2,4 +2,4 @@ import re
 from collections import Counter
 
 def solution(s):
-    return [int(value) for value, _ in Counter(re.findall("\d+", s)).most_common()]
+    return [int(k) for k, v in Counter(re.findall('\d+', s)).most_common()]

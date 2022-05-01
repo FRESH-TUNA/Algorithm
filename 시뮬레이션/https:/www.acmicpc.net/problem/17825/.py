@@ -17,7 +17,7 @@ def dices_init():
     
 def circle_init():
     pointer = head
-    for n in range(2, 40, 2):
+    for n in range(2, 41, 2):
         new_node = node_db[n] if n in node_db else Node(n)
         pointer.red = new_node
         pointer = pointer.red
@@ -65,17 +65,86 @@ def dfs(idx, res):
         return
 
     for i in range(len(nodes)):
-        if not nodes[i]: continue
-        
-        next_res, origin_node = res, nodes[i]
-        for _ in range(dices[idx]):
-            nodes[i] = nodes[i].blue if nodes[i].val in blues else nodes[i].red
-            if not nodes[i]: break
-            next_res += nodes[i].val
-            
-        dfs(idx+1, next_res)
-        nodes[i] = origin_node
+        if not nodes[i]: 
+            dfs(idx+1, res)
+            continue
 
+        origin_node = nodes[i]
+        nodes[i] = nodes[i].blue if nodes[i].val in blues else nodes[i].red
+        can_dfs = True
+
+        for _ in range(dices[idx]-1):
+            if not nodes[i]: break
+            nodes[i] = nodes[i].red
+            
+        for j in range(4):
+            if i == j: continue
+            if nodes[j] == nodes[i]:
+                can_dfs = False
+                break
+
+        if can_dfs:
+            sub_ans = res+nodes[i].val if nodes[i] else res
+            dfs(idx+1, sub_ans)
+        nodes[i] = origin_node
+    
+
+
+# tests
+def circle_init_test():
+    pointer = head
+    while pointer:
+        print(pointer.val)
+        pointer = pointer.red
+
+def west_north_init_test():
+    pointer = node_db[10]
+    while pointer:
+        print(pointer.val)
+        pointer = pointer.red
+
+    print("---")
+    pointer = node_db[10]
+    print(pointer.val)
+    pointer = pointer.blue
+    print(pointer.val)
+    pointer = pointer.red
+    while pointer:
+        print(pointer.val)
+        pointer = pointer.red
+
+def east_north_init_test():
+    pointer = node_db[30]
+    while pointer:
+        print(pointer.val)
+        pointer = pointer.red
+
+    print("---")
+    pointer = node_db[30]
+    print(pointer.val)
+    pointer = pointer.blue
+    print(pointer.val)
+    pointer = pointer.red
+    while pointer:
+        print(pointer.val)
+        pointer = pointer.red
+
+def south_north_init_test():
+    pointer = node_db[20]
+    while pointer:
+        print(pointer.val)
+        pointer = pointer.red
+
+    print("---")
+    pointer = node_db[20]
+    print(pointer.val)
+    pointer = pointer.blue
+    print(pointer.val)
+    pointer = pointer.red
+    while pointer:
+        print(pointer.val)
+        pointer = pointer.red
+    
 # driver
 dices_init()
 circle_init()
@@ -85,3 +154,4 @@ south_init()
 north_init()
 dfs(0, 0)
 print(ans)
+

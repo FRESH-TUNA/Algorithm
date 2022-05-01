@@ -4,10 +4,11 @@ input = sys.stdin.readline
 
 RES = 0
 N = 33
+END = 21
 G = [0 for _ in range(N)]
 for i in range(21): G[i] = i+1
 
-G[21] = 21
+G[END] = END
 G[22], G[23], G[24] = 23, 24, 30
 G[25], G[26] = 26, 30
 G[27], G[28], G[29] = 28, 29, 30
@@ -41,7 +42,7 @@ def dfs(idx, res):
             move -= 1
 
         for _ in range(move): x = G[x]
-        if TRACED[x] and x != 21:
+        if TRACED[x] and x != END:
             continue
 
         TRACED[x0], TRACED[x], chess[i] = 0, 1, x

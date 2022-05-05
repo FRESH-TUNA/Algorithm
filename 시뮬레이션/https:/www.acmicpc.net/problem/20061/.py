@@ -19,7 +19,6 @@ def solution():
             if x == 1: blocks += 1
     print(RES)
     print(blocks)
-    
 
 def gaming(blocks):
     blue_move(blocks); green_move(blocks);
@@ -32,8 +31,6 @@ def blue_move(blocks):
     while True:
         if blue_border_check(blocks):
             for x, y in blocks: G[x][y] = 1
-            # print("---")
-            #for i in range(10): print(G[i])
             return
         for i in range(len(blocks)):
             blocks[i][1] += 1
@@ -45,7 +42,6 @@ def green_move(blocks):
             return
         for i in range(len(blocks)):
             blocks[i][0] += 1
-
 
 # remove
 def blue_remove():
@@ -63,8 +59,6 @@ def blue_remove():
 
     for i in range(b+1):
         G[0][i] = G[1][i] = G[2][i] = G[3][i] = 0
-    # print("---")
-    # for i in range(10): print(G[i])
 
 def green_remove():
     global RES
@@ -81,9 +75,6 @@ def green_remove():
 
     for i in range(b+1):
         G[i][0] = G[i][1] = G[i][2] = G[i][3] = 0
-    # print("---")
-    # for i in range(10): print(G[i])
-
 
 # shift
 def blue_shift():
@@ -91,36 +82,26 @@ def blue_shift():
     if G[0][4] or G[1][4] or G[2][4] or G[3][4]: n += 1
     if G[0][5] or G[1][5] or G[2][5] or G[3][5]: n += 1
 
-    if n == 0:
-        # print("---")
-        # for i in range(10): print(G[i])
-        return
+    if n == 0: return
     for i in range(BORDER-1-n, -1, -1):
         G[0][i+n], G[1][i+n] = G[0][i], G[1][i]
         G[2][i+n], G[3][i+n] = G[2][i], G[3][i]
 
     for i in range(n):
         G[0][i] = G[1][i] = G[2][i] = G[3][i] = 0
-    # print("---")
-    # for i in range(10): print(G[i])
 
 def green_shift():
     n = 0
     if G[4][0] or G[4][1] or G[4][2] or G[4][3]: n += 1
     if G[5][0] or G[5][1] or G[5][2] or G[5][3]: n += 1
 
-    if n == 0:
-        # print("---")
-        # for i in range(10): print(G[i])
-        return
+    if n == 0: return
     for i in range(BORDER-1-n, -1, -1):
         G[i+n][0], G[i+n][1] = G[i][0], G[i][1]
         G[i+n][2], G[i+n][3] = G[i][2], G[i][3]
 
     for i in range(n):
         G[i][0] = G[i][1] = G[i][2] = G[i][3] = 0
-    # print("---")
-    # for i in range(10): print(G[i])
 
 # border check
 def blue_border_check(blocks):

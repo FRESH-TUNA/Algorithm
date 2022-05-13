@@ -1,33 +1,30 @@
 answer = 1000000000
-N, finish, traced = 0, 0, set()
+N, traced = 0, set()
 
 def solution(name):
-    global N, finish
+    global N
+    updown, N = 0, len(name)
+    positions = [0] + [i+1 for i, v in enumerate(name[1:]) if v != 'A']
 
-    N = len(name)
-    updown_answer = 0
-    
     # up_down
-    for idx, char in enumerate(name):
-        updown_answer += min(ord(char) - ord('A'), ord('Z') - ord(char) + 1)
-        if char != 'A': finish += 1
-    if finish == 0: return 0
-    if name[0] == 'A': finish += 1
+    for p in positions:
+        updown += min(ord(name[p])-ord('A'), ord('Z')-ord(name[p])+1)
+    if not updown: return 0
 
     # dfs
     traced.add(0)
-    dfs(name, 0, updown_answer)
+    dfs(positions, 0, updown)
     return answer
 
-def dfs(name, cur_pos, cur):
+def dfs(positions, cur_pos, cur):
     global answer
 
-    if len(traced) == finish:
+    if len(traced) == len(positions):
         answer = min(answer, cur)
         return
 
-    for n in range(N):
-        if n in traced or name[n] == 'A': continue
+    for n in positions:
+        if n in traced: continue
         
         n_cur = cur
         if cur_pos > n: n_cur += min(cur_pos-n, N-cur_pos+n)
@@ -35,5 +32,5 @@ def dfs(name, cur_pos, cur):
         if n_cur >= answer: continue
             
         traced.add(n)
-        dfs(name, n, n_cur)
+        dfs(positions, n, n_cur)
         traced.remove(n)

@@ -25,20 +25,13 @@ def solution():
     FISHES[root_fish] = None
     G[0][0] = SHARK
     
-    for _ in range(1):
+    while True:
         for fish in range(1, FISH_N+1):
             if FISHES[fish]: fish_move(fish)
-
-            # for row in G:
-            #     print(row)
-            # print("---")
-        
-        
         score = shark_move()
         if not score: break
         answer += score
 
-    print(FISHES)
     return answer
     
 def fish_move(fish):
@@ -56,9 +49,9 @@ def fish_move(fish):
             fish_d = (fish_d+1)%8
             continue
 
-        FISHES[fish][D] = fish_d
-        if G[nfish_i][nfish_j] != DELETED:
-            FISHES[fish], FISHES[changed_fish] = FISHES[changed_fish], FISHES[fish]
+        FISHES[fish][I], FISHES[fish][J], FISHES[fish][D] = nfish_i, nfish_j, fish_d
+        if changed_fish != DELETED:
+            FISHES[changed_fish][I], FISHES[changed_fish][J] = fish_i, fish_j
         G[fish_i][fish_j], G[nfish_i][nfish_j] = G[nfish_i][nfish_j], G[fish_i][fish_j]
         return
 

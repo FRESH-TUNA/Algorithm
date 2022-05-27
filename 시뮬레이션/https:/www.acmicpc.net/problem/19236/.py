@@ -6,6 +6,7 @@ FISH_N, SHARK, N, DELETED = 16, 0, 4, -1
 I, J, D, ND = 0, 1, 2, 8
 AD = ((-1, 0), (-1, -1), (0, -1), (1, -1), (1, 0), (1, 1), (0, 1), (-1, 1))
 FISHES, G = [None]*(FISH_N+1), [None]*N
+Answer = 0
 
 # init
 for i in range(N):
@@ -16,72 +17,61 @@ for i in range(N):
 
 # solution
 def solution():
-    answer = 0
-
-    # root
+    # root init
     root_fish = G[0][0]
     FISHES[SHARK] = [0, 0, FISHES[root_fish][D]]
-    answer += root_fish
+    answer = root_fish
     FISHES[root_fish] = None
     G[0][0] = SHARK
-    
-    while True:
-        for fish in range(1, FISH_N+1):
-            if FISHES[fish]: fish_move(fish)
-        score = shark_move()
-        if not score: break
-        answer += score
 
-    return answer
-    
-def fish_move(fish):
-    fish_i, fish_j, fish_d = FISHES[fish]
-    for _ in range(ND):
-        ci, cj = AD[fish_d]
-        nfish_i, nfish_j = fish_i+ci, fish_j+cj
+    simulate(FISHES, G, answer)
+    return Answer
 
-        if out_of_range(nfish_i, nfish_j):
-            fish_d = (fish_d+1)%8
-            continue
+def simulate(fishes, g, answer):
+    global Answer
+    for fish in range(1, FISH_N+1):
+        if fishes[fish]: fish_move(fishes, g, fish)
 
-        changed_fish = G[nfish_i][nfish_j]
-        if changed_fish == SHARK:
-            fish_d = (fish_d+1)%8
-            continue
-
-        FISHES[fish][I], FISHES[fish][J], FISHES[fish][D] = nfish_i, nfish_j, fish_d
-        if changed_fish != DELETED:
-            FISHES[changed_fish][I], FISHES[changed_fish][J] = fish_i, fish_j
-        G[fish_i][fish_j], G[nfish_i][nfish_j] = G[nfish_i][nfish_j], G[fish_i][fish_j]
-        return
-
-def shark_move():
-    i, j, d = FISHES[SHARK]
+    i, j, d = fishes[SHARK]
     ci, cj = AD[d]
-    si, sj = i, j
     ni, nj = i, j
-    score = 0
 
     while True:
         ni, nj = ni+ci, nj+cj
         
-        if out_of_range(ni, nj): break
-        
-        fish = G[ni][nj]
-        if G[ni][nj] == DELETED: continue
+        if out_of_range(ni, nj): 
+            Answer = max(Answer, answer)
+            break
 
-        if fish > score:
-            score = max(fish, score)
-            si, sj = ni, nj
+        eaten = g[ni][nj]
+        if eaten == DELETED: continue
 
-    if i != si or j != sj:
-        G[si][sj] = G[i][j]
-        G[i][j] = DELETED
-        FISHES[SHARK] = FISHES[score]
-        FISHES[score] = None
-    return score
+        ng = [[c for c in row] for row in g]
+        nfishes = [[data for data in fish] if fish else None for fish in fishes]
+
+        ng[ni][nj], ng[i][j] = SHARK, DELETED
+        nfishes[SHARK], nfishes[eaten] = nfishes[eaten], None
+        simulate(nfishes, ng, answer+eaten)
+
+def fish_move(fishes, g, fish):
+    i, j, d = fishes[fish]
+
+    for _ in range(ND):
+        ci, cj = AD[d]
+        ni, nj = i+ci, j+cj
+
+        if out_of_range(ni, nj) or g[ni][nj] == SHARK:
+            d = (d+1)%8
+            continue  
+        fishes[fish][I], fishes[fish][J], fishes[fish][D] = ni, nj, d
+
+        changed_fish = g[ni][nj]
+        if changed_fish != DELETED:
+            fishes[changed_fish][I], fishes[changed_fish][J] = i, j
+        g[i][j], g[ni][nj] = changed_fish, fish
+        return
         
 def out_of_range(i, j):
-    return i<0 or i==N or j<0 or j==N
+    return i==-1 or i==N or j==-1 or j==N
 
 print(solution())

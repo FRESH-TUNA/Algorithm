@@ -4,7 +4,6 @@ def solution(sugar, salt, stuffs):
     MAX_SALT = max(s[1] for s in stuffs)
     MAX_TIME = MAX_SUGAR + MAX_SALT
     stuffs = [[0,0,1,0,1], [0,0,0,1,1]] + stuffs
-    N = len(stuffs)
     DB = [[MAX_TIME for _ in range(MAX_SALT+1)] for _ in range(MAX_SUGAR+1)]
 
     # init

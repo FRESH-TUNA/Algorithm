@@ -1,74 +1,67 @@
-from collections import deque
-
 def solution():
-    N, M, K = list(map(int, input().split()))
+    N, M, K = map(int, input().split())
     g = [list(map(int, input().split())) for _ in range(N)]
-    D, DN = [0]+list(map(int, input().split())), 4
-    DI, DJ = [0,-1,1,0,0], [0,0,0,-1,1]
-    P = [None] + [[None]+[list(map(int, input().split())) 
-                for _ in range(DN)] for _ in range(M)]
-    T, GET, OUT_OF_BOUND = 1000, 0, {-1,N}
+    D, DN, GET, MAX_TIME = list(map(int, input().split())), 4, 0, 1000
+    DI, DJ, OUT_OF_RANGE = [-1,1,0,0], [0,0,-1,1], {-1,N}
+    P = [[list(map(int, input().split())) 
+        for _ in range(DN)] for _ in range(M)]
+    smell = [[[0, 0]]*N for _ in range(N)]
+    removed = [0]
 
-    st, sr = [[0]*N for _ in range(N)], [[0]*N for _ in range(N)]
-    fishes, removed = deque(), [0]
-
-    def move_fishes():
-        for _ in range(len(fishes)):
-            move_fish(*fishes.popleft())
-
-    def move_fish(fish, i, j):
-        d = D[fish]
-        pd, pi, pj = None, None, None
-
-        # 방향에 따라 우선순위 대로 검사
-        for nd in P[fish][d]:
-            ni, nj = i+DI[nd], j+DJ[nd]
-            if ni in OUT_OF_BOUND or nj in OUT_OF_BOUND:
-                continue
-            if st[ni][nj] == fish:
-                pi, pj, pd = ni, nj, nd
-            if st[ni][nj]:
-                continue
-            fishes.append((fish, ni, nj))
-            D[fish] = nd
-            return
-        fishes.append((fish, pi, pj))
-        D[fish] = pd
-
-    def kill_fishes():
-        while fishes:
-            fish, i, j = fishes.popleft()
-            if g[i][j] == 0: 
-                g[i][j] = fish
-            else:
-                removed[GET] += 1
-                g[i][j] = min(g[i][j], fish)
-
-    def init():
+    def update_smell():
         for i in range(N):
             for j in range(N):
-                if g[i][j]:
-                    fishes.append((g[i][j], i, j))
-                    st[i][j], sr[i][j], g[i][j] = g[i][j], K, 0
-                elif sr[i][j] > 1:
-                    sr[i][j] -= 1
-                else:
-                    st[i][j], sr[i][j] = 0, 0
+                if smell[i][j][1] > 0 :
+                    smell[i][j][1] -= 1
+                if g[i][j] != 0 :
+                    smell[i][j] = [g[i][j], K]
 
-    def simulate():
-        for t in range(1, T+1):
-            move_fishes()
-            kill_fishes()
-            # for row in sr:
-            #     print(row)
-            # print(str(t)+"--")
-            init()
-            if removed[GET] == M-1: return t
+    def move_fishes():
+        ng = [[0]*N for _ in range(N)]
+        for i in range(N):
+            for j in range(N) :
+                if g[i][j] != 0:
+                    move_fish(ng, i, j)
+        return ng
+
+    # 모든 상어를 이동시키는 함수
+    def move_fish(ng, i, j):
+        fish, fish_idx = g[i][j], g[i][j]-1 
+        direction, direction_idx = D[fish_idx], D[fish_idx]-1
+        pi, pj, pd = None, None, None
+
+        def death_or_live(ni, nj, nd):
+            D[fish_idx] = nd
+            if ng[ni][nj] == 0 :
+                ng[ni][nj] = fish
+            else:
+                removed[GET] += 1
+                ng[ni][nj] = min(ng[ni][nj], fish)
+
+        for nd in P[fish_idx][direction_idx]:
+            nd_idx = nd-1
+            ni, nj = i + DI[nd_idx], j + DJ[nd_idx]
+            if ni in OUT_OF_RANGE or nj in OUT_OF_RANGE:
+                continue
+            if smell[ni][nj][0] == fish and pi == None:
+                pi, pj, pd = ni, nj, nd
+            if smell[ni][nj][1] == 0:
+                death_or_live(ni, nj, nd)
+                return
+        death_or_live(pi, pj, pd)
+
+    def g_set(ng):
+        for i in range(N):
+            for j in range(N):
+                g[i][j] = ng[i][j]
+
+    def call():
+        for time in range(1, MAX_TIME+1):
+            update_smell() # 모든 위치의 냄새를 업데이트
+            g_set(move_fishes())
+            if removed[GET] == M-1: return time
         return -1
+    print(call())
 
-    for row in P:
-        print(row)
-    init()
-    print(simulate())
-    
+# driver
 solution()

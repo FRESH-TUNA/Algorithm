@@ -1,31 +1,30 @@
-import sys
 from collections import deque
 
 def solution():
-    input = sys.stdin.readline
     N, K = map(int, input().split())
-    BELT, ROBOT = deque(list(map(int, input().split()))), deque([0]*(N))
-    EMPTY, GET = [0], 0
+    robot, belt = deque([0]*N), deque(map(int, input().split()))
+    empty = 0
 
-    for answer in range(1, N*max(BELT)*2+1):
-        BELT.rotate(1)
-        ROBOT.rotate(1)
-        ROBOT[-1] = 0
+    for answer in range(1, N*max(belt)*2+1):
+        # 회전해라
+        robot.rotate(1)
+        belt.rotate(1)
+
+        # 내려라
+        robot[N-1] = 0
+        for n in range(N-2, -1, -1):
+            if robot[n] and not robot[n+1] and belt[n+1]:
+                robot[n+1], robot[n] = 1, 0
+                belt[n+1] -= 1
+                empty += (belt[n+1] == 0)
+
+        # 내려라
+        robot[N-1] = 0
+        if not robot[0] and belt[0]:
+            robot[0] = 1
+            belt[0] -= 1
+            empty += (belt[0] == 0)
+
+        if empty >= K: return answer
         
-        for i in range(N-2, -1, -1):
-            if ROBOT[i] and not ROBOT[i+1] and BELT[i+1]:
-                ROBOT[i], ROBOT[i+1] = ROBOT[i+1], ROBOT[i]
-                BELT[i+1] -= 1
-                EMPTY[GET] += (BELT[i+1] == 0)
-
-        ROBOT[-1] = 0
-
-        if not ROBOT[0] and BELT[0]:
-            ROBOT[0] = 1
-            BELT[0] -= 1
-            EMPTY[GET] += (BELT[0] == 0)
-
-        if EMPTY[GET] >= K:
-            return answer
-
 print(solution())

@@ -1,9 +1,10 @@
 import sys
 from itertools import product
+from functools import cmp_to_key
 
 D, DR, DC = 8, [-1,-1,-1,0,1,1,1,0], [-1,0,1,1,1,0,-1,-1]
 N, WIDTH = int(sys.stdin.readline()), 4
-WORDS = sorted(sys.stdin.readline().strip() for _ in range(N))
+WORDS = [sys.stdin.readline().strip() for _ in range(N)]
 SCORE = [0, 0, 0, 1, 1, 2, 3, 5, 11]
 DB = {'word': None}
 traced = [[0]*WIDTH for _ in range(WIDTH)]
@@ -18,22 +19,6 @@ def inputBoards():
         sys.stdin.readline().strip()
     return boards
 
-def makePriorityGraph(board):
-    graph = [[[] for c in range(WIDTH)] for r in range(WIDTH)]
-    
-    for r in range(WIDTH):
-        for c in range(WIDTH):
-            for d in range(D):
-                nr, nc = r+DR[d], c+DC[d]
-                if nr==-1 or nr==WIDTH or nc==-1 or nc==WIDTH:
-                    continue
-                graph[r][c].append((board[nr][nc], nr, nc))
-
-    for r in range(WIDTH):
-        for c in range(WIDTH):
-            graph[r][c].sort()
-    return graph
-    
 def dbInit():
     for word in WORDS:
         pointer = DB
@@ -43,38 +28,46 @@ def dbInit():
             pointer = pointer[c]
         pointer['word'] = word
 
-def game(board, graph):
-    score, longest, count = 0, '', 0
-
-    def check(r, c, pointer, graph):
+def game(board):
+    score, longest, count = 0, 'Z', 0
+    words = set()
+    
+    def check(r, c, pointer, board):
         nonlocal score, longest, count
 
-        for v, nr, nc in graph[r][c]:
-            if v not in pointer or traced[nr][nc]:
-                continue
-        
-            if pointer[v]['word']:
-                count += 1
-                score += SCORE[len(pointer[v]['word'])]
+        if pointer['word'] and pointer['word'] not in words:
+            count += 1
+            score += SCORE[len(pointer['word'])]
+            words.add(pointer['word'])
 
-                if len(pointer[v]['word']) > len(longest):
-                    longest = pointer[v]['word']
-                pointer[v]['word'] = None
-            
-            traced[nr][nc] = 1
-            check(nr, nc, pointer[v], graph)
-            traced[nr][nc] = 0
+        if len(pointer) != 1:
+            for d in range(D):
+                nr, nc = r+DR[d], c+DC[d]
+                if nr==-1 or nr==WIDTH or nc==-1 or nc==WIDTH:
+                    continue
+                if board[nr][nc] not in pointer or traced[nr][nc]:
+                    continue
+                traced[nr][nc] = 1
+                check(nr, nc, pointer[board[nr][nc]], board)
+                traced[nr][nc] = 0
 
-    nodes = sorted(product(range(WIDTH), repeat=2), 
-                   key=lambda x: graph[x[0]][x[1]][0])
+    def compare(x, y):
+        if len(x) != len(y):
+            return len(x)-len(y)
+        else:
+            return 1 if x<y else -1
 
-    for r, c in nodes:
-        if board[r][c] in DB:
-            check(r, c, DB, graph)
-    return ' '.join((str(score), longest, str(count)))
+    for r in range(WIDTH):
+        for c in range(WIDTH):
+            if board[r][c] in DB:
+                traced[r][c] = 1
+                check(r, c, DB[board[r][c]], board)
+                traced[r][c] = 0
+
+    return ' '.join((str(score), sorted(words, key=cmp_to_key(compare))[-1], str(count)))
 
 # driver
+dbInit()
 for board in inputBoards():
-    dbInit()
-    print(game(board, makePriorityGraph(board)))
+    print(game(board))
 
